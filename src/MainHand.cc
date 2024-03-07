@@ -159,7 +159,7 @@ private:
     auto msg_grip_state = msg->data;
 
     if (msg_grip_state >= 1 and msg_grip_state >= 0){
-      double temp_grip_ = static_cast<double>(msg_grip_state * robot_grip_max;
+      double temp_grip_ = static_cast<double>(msg_grip_state * robot_grip_max);
     } else {
       RCLCPP_WARN(this->get_logger(), "Invalid grip received");
     }

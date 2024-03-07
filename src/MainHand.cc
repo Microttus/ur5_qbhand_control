@@ -20,6 +20,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/float64.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 
 #include "qbshr_ctr/qbSoftHandHandler.hh"
@@ -51,11 +52,13 @@ public:
     HandInterface() : Node("hand_control")
     , qbSoftHand_devices(my_hands_.ReturnDeviceMap())
     , temp_grip_state(0)
+    , robot_grip_max(19000.0)
     {
-    heartbeat_ = this->create_publisher<std_msgs::msg::String>("heartbeat_control", 10);        // Heartbeat
-    right_hand_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("finger_force", 10);    // Finger force publisher
+    heartbeat_ = this->create_publisher<std_msgs::msg::String>("/heartbeat_control", 10);        // Heartbeat
+    right_hand_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/finger_force", 10);    // Finger force publisher
 
     hand_guest_sub_ = this->create_subscription<std_msgs::msg::String>("/hand_gestures", 10, std::bind(&HandInterface::set_robot_hand_pos_camera, this, std::placeholders::_1));
+    glove_pos_sub_ = this->create_subscription<std_msgs::msg::Float64>("/robot_hand_set_grip", 10, std::bind(&HandInterface::set_robot_hand_pos_from_glove, this, std::placeholders::_1));
 
     timer_ = this->create_wall_timer(10ms, std::bind(&HandInterface::timer_callback, this));
 
@@ -151,6 +154,19 @@ private:
     qbSoftHand_devices[0].SetGripValue(temp_grip_state,0);
   }
 
+  void set_robot_hand_pos_from_glove(std_msgs::msg::Float64::SharedPtr msg)
+  {
+    auto msg_grip_state = msg->data;
+
+    if (msg_grip_state =< 1 and msg_grip_state >= 0){
+      double temp_grip_ = static_cast<double>(msg_grip_state * robot_grip_max;
+    } else {
+      RCLCPP_WARN(this->get_logger(), "Invalid grip received");
+    }
+
+    qbSoftHand_devices[0].SetGripValue(temp_grip_state,0);
+  }
+
   void set_robot_hand_pos_camera(std_msgs::msg::String::SharedPtr msg)
   {
     std::string grip_state = msg->data;
@@ -177,6 +193,7 @@ private:
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr heartbeat_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr right_hand_pub_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr hand_guest_sub_;
+  rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr glove_pos_sub_;
 
   // Finger force data struct declaration
   FingerForceStruct RightHand;
@@ -189,6 +206,7 @@ private:
   // Temp test values // TODO: Remove during cleanup
   int temp_grip_state;
   int force_from_robot_hand = 0;
+  double robot_grip_max;
   //size_t count_;
 };
 

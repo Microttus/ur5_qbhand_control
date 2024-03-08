@@ -158,13 +158,17 @@ private:
   {
     auto msg_grip_state = msg->data;
 
-    if (msg_grip_state >= 1 and msg_grip_state >= 0){
-      double temp_grip_ = static_cast<double>(msg_grip_state * robot_grip_max);
+    int temp_grip_ = 0;
+
+    if (msg_grip_state >= 0.0 and msg_grip_state <= 1.0){
+      temp_grip_ = static_cast<int>(msg_grip_state * robot_grip_max);
+      std::cout << temp_grip_ << std::endl;
     } else {
-      RCLCPP_WARN(this->get_logger(), "Invalid grip received");
+      RCLCPP_WARN(this->get_logger(), "Invalid grip received '%f'", msg_grip_state);
     }
 
-    qbSoftHand_devices[0].SetGripValue(temp_grip_state,0);
+
+    qbSoftHand_devices[0].SetGripValue(temp_grip_,0);
   }
 
   void set_robot_hand_pos_camera(std_msgs::msg::String::SharedPtr msg)

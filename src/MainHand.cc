@@ -162,7 +162,6 @@ private:
 
     if (msg_grip_state >= 0.0 and msg_grip_state <= 1.0){
       temp_grip_ = static_cast<int>(msg_grip_state * robot_grip_max);
-      std::cout << temp_grip_ << std::endl;
     } else {
       RCLCPP_WARN(this->get_logger(), "Invalid grip received '%f'", msg_grip_state);
     }

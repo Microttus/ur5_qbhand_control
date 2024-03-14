@@ -30,7 +30,8 @@ find_package(qbshr_ctr REQUIRED)
 
 
 # Build Settings
-add_executable(qbhand_control src/MainHand.cc)
+add_executable(qbhand_control src/MainHand.cc
+        src/struct_lib.cc)
 
 
 #target_link_libraries(qbhand_control

@@ -26,24 +26,10 @@
 #include "qbshr_ctr/qbSoftHandHandler.hh"
 #include "qbshr_ctr/qbSoftHandControl.hh"
 
+#include "struct_lib.cc"
+
 
 using namespace std::chrono_literals;
-
-
-struct FingerForceStruct {
-    int thumb;
-    int index;
-    int middle;
-    int ring;
-    int little;
-    int palm;
-};
-
-struct RobotHandFeedback {
-  std::vector<int16_t> positions;
-  std::vector<int16_t> currents;
-  int force_compensated;
-};
 
 
 class HandInterface : public rclcpp::Node
@@ -122,7 +108,7 @@ private:
   {
     force_from_robot_hand = RightRobotHand.force_compensated;
 
-    int out_max = 254;
+    int out_max = 25;
     int in_max = 400;
     int oi_min = 0;
 

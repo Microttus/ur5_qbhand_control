@@ -2,6 +2,9 @@
 // Created by biomech on 14.03.24.
 //
 
+#include <vector>
+#include <cstdint>
+
 struct FingerForceStruct {
   int thumb;
   int index;

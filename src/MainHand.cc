@@ -41,7 +41,7 @@ public:
     , robot_grip_max(19000.0)
     {
     heartbeat_ = this->create_publisher<std_msgs::msg::String>("/heartbeat_control", 10);        // Heartbeat
-    right_hand_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/finger_force", 10);    // Finger force publisher
+    right_hand_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/finger_force", 10);    // Finger force publisher /finger_force
 
     hand_guest_sub_ = this->create_subscription<std_msgs::msg::String>("/hand_gestures", 10, std::bind(&HandInterface::set_robot_hand_pos_camera, this, std::placeholders::_1));
     glove_pos_sub_ = this->create_subscription<std_msgs::msg::Float64>("/robot_hand_set_grip", 10, std::bind(&HandInterface::set_robot_hand_pos_from_glove, this, std::placeholders::_1));
@@ -108,7 +108,7 @@ private:
   {
     force_from_robot_hand = RightRobotHand.force_compensated;
 
-    int out_max = 25;
+    int out_max = 254;
     int in_max = 400;
     int oi_min = 0;
 
